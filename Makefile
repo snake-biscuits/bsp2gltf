@@ -1,5 +1,5 @@
 CXX       := g++
-CFLAGS    := -ggdb
+CXXFLAGS  := -ggdb
 SRC_DIRS  := src src/branch src/bsp src/convert
 ALL_DIRS  := $(addprefix build/,$(SRC_DIRS))
 CPP_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
@@ -17,7 +17,7 @@ clean: rm -rf build/src/
 
 
 build/%.o: %.cpp $(CPP_FILES)
-	$(CXX) $(CFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 build/bsp2gltf.exe: $(O_FILES)
-	$(CXX) $(CFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^
