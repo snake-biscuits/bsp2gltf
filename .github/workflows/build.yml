@@ -20,6 +20,7 @@ jobs:
 
     steps:
     - uses: msys2/setup-msys2@v2
+      id: setup
       with:
         install: base-devel
         msystem: ${{ matrix.msystem }}
@@ -31,7 +32,7 @@ jobs:
 
     - name: Build
       run: |
-        make all
+        make CXX='${{ steps.setup.outputs.gxx }}' all
         rm -rf build/src/
 
     - name: Generate Artifact Name
