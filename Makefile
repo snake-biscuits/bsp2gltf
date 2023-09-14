@@ -8,12 +8,13 @@ O_FILES   := $(foreach file,$(CPP_FILES),build/$(file:.cpp=.o))
 
 DUMMY != mkdir -p build $(ALL_DIRS)
 
-.PHONY: all
+.PHONY: all clean
 
 
 all: build/bsp2gltf.exe
 
-# TODO: clean
+clean: rm -rf build/src/
+
 
 build/%.o: %.cpp $(CPP_FILES)
 	$(CXX) $(CFLAGS) -c -o $@ $<

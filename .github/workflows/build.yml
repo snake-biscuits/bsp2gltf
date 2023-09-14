@@ -22,7 +22,7 @@ jobs:
     - uses: msys2/setup-msys2@v2
       id: setup
       with:
-        install: base-devel
+        install: base-devel mingw-w64-i686-toolchain
         msystem: ${{ matrix.msystem }}
         path-type: minimal
         release: false
@@ -32,7 +32,7 @@ jobs:
 
     - name: Build
       run: |
-        make CXX='${{ steps.setup.outputs.gxx }}' all
+        make CXX="i686-w64-mingw32-g++" all
         rm -rf build/src/
 
     - name: Generate Artifact Name
