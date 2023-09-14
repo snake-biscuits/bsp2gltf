@@ -10,12 +10,23 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64]
+        include:
+          - arch: x86_64
+            msystem: MINGW64
 
     defaults:
       run:
         shell: msys2 {0}
 
     steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        install: base-devel
+        msystem: ${{ matrix.msystem }}
+        path-type: minimal
+        release: false
+        update: false
+
     - uses: actions/checkout@v3
 
     - name: Build
