@@ -27,18 +27,16 @@ jobs:
         path-type: minimal
         release: true
 
-    - name: Find g++
-      run: |
-        which g++
-        ls /bin/
-
     - uses: actions/checkout@v3
 
     - name: Build
       run: |
         make CXX=x86_64-w64-mingw32-g++ CXXFLAGS=-static all
+
+    - name: Move Artifact
+      run: |
         mkdir artifact/
-        move build/*.exe artifact/
+        mv build/*.exe artifact/
 
     - name: Generate Artifact Name
       run: |
@@ -65,7 +63,11 @@ jobs:
     - name: Build
       run: |
         make all
-        rm -rf build/src/
+
+    - name: Move Artifact
+      run: |
+        mkdir artifact/
+        mv build/*.exe artifact/
 
     - name: Generate Artifact Name
       run: |
@@ -74,5 +76,5 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ env.ARTIFACT_NAME }}
-        path: build/
+        path: artifact/
         if-no-files-found: error
