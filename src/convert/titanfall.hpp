@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -39,9 +41,9 @@ namespace titanfall {
     } StateGLTF;
 
 
-    void gather_vertices(RespawnBsp &bsp, StateGLTF &state);
+    void gather_vertices(respawn::Bsp &bsp, StateGLTF &state);
 
-    void gather_indices(RespawnBsp &bsp, StateGLTF &state);
+    void gather_indices(respawn::Bsp &bsp, StateGLTF &state);
 
     void generate_gltf(StateGLTF &state);
 

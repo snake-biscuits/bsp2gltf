@@ -9,7 +9,7 @@
 
 
 namespace titanfall {
-    void gather_vertices(RespawnBsp &bsp, StateGLTF &state) {
+    void gather_vertices(respawn::Bsp &bsp, StateGLTF &state) {
         // get lumps
         GET_LUMP(quake::Vertex,  VERTICES,         0x03);
         GET_LUMP(quake::Vertex,  VERTEX_NORMALS,   0x1E);
@@ -66,7 +66,7 @@ namespace titanfall {
     }
 
 
-    void gather_indices(RespawnBsp &bsp, StateGLTF &state) {
+    void gather_indices(respawn::Bsp &bsp, StateGLTF &state) {
         // get lumps
         GET_LUMP(TextureData,    TEXTURE_DATA,     0x02);
         GET_LUMP(Model,          MODELS,           0x0E);
