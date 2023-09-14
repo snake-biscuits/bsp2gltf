@@ -5,7 +5,7 @@ on: [push,pull_request,workflow_dispatch]
 jobs:
   Windows:
     name: ${{ matrix.config }} Windows ${{ matrix.arch }}
-    runs-on: windows-2022
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
@@ -22,18 +22,23 @@ jobs:
     - uses: msys2/setup-msys2@v2
       id: setup
       with:
-        install: base-devel mingw-w64-i686-toolchain
+        install: base-devel mingw-w64-x86_64-gcc
         msystem: ${{ matrix.msystem }}
         path-type: minimal
-        release: false
-        update: false
+        release: true
+
+    - name: Find g++
+      run: |
+        which g++
+        ls /bin/
 
     - uses: actions/checkout@v3
 
     - name: Build
       run: |
-        make CXX="i686-w64-mingw32-g++" all
-        rm -rf build/src/
+        make CXX=x86_64-w64-mingw32-g++ CXXFLAGS=-static all
+        mkdir artifact/
+        move build/*.exe artifact/
 
     - name: Generate Artifact Name
       run: |
@@ -42,7 +47,7 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         name: ${{ env.ARTIFACT_NAME }}
-        path: build/
+        path: artifact/
         if-no-files-found: error
 
 
