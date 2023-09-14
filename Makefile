@@ -6,10 +6,6 @@ CPP_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
 HPP_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.hpp))
 O_FILES   := $(foreach file,$(CPP_FILES),build/$(file:.cpp=.o))
 
-ifeq ($(OS),Windows_NT)  # NOTE: if compiling for Windows, use MSYS2 / MINGW64
-    CXX      := x86_64-w64-mingw32-g++
-endif
-
 DUMMY != mkdir -p build $(ALL_DIRS)
 
 .PHONY: all
