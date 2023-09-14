@@ -1,0 +1,61 @@
+name: build
+
+on: [push,pull_request,workflow_dispatch]
+
+jobs:
+  Windows:
+    name: ${{ matrix.config }} Windows ${{ matrix.arch }}
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64]
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        make all
+        rm -rf build/src/
+
+    - name: Generate Artifact Name
+      run: |
+        echo "ARTIFACT_NAME=$(echo bsp2gltf_`date -u -Idate`_`git rev-parse --short HEAD`_Windows_${{ matrix.arch }})" >> $GITHUB_ENV
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: build/
+        if-no-files-found: error
+
+
+  Linux:
+    name: ${{ matrix.config }} Linux ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Build
+      run: |
+        make all
+        rm -rf build/src/
+
+    - name: Generate Artifact Name
+      run: |
+        echo "ARTIFACT_NAME=$(echo bsp2gltf_`date -u -Idate`_`git rev-parse --short HEAD`_Linux_${{ matrix.arch }})" >> $GITHUB_ENV
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: ${{ env.ARTIFACT_NAME }}
+        path: build/
+        if-no-files-found: error
