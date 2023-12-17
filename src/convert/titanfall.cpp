@@ -1,18 +1,18 @@
 #include <cstdint>
 #include <cstring>
 
-#include "../branch/titanfall.hpp"
-#include "../branch/quake.hpp"
 #include "../common.hpp"
+#include "../branch/titanfall.hpp"
 #include "../gltf.hpp"
+#include "../sanitise.hpp"
 #include "titanfall.hpp"
 
 
 namespace titanfall {
     void gather_vertices(respawn::Bsp &bsp, StateGLTF &state) {
         // get lumps
-        GET_LUMP(quake::Vertex,  VERTICES,         0x03);
-        GET_LUMP(quake::Vertex,  VERTEX_NORMALS,   0x1E);
+        GET_LUMP(Vector,         VERTICES,         0x03);
+        GET_LUMP(Vector,         VERTEX_NORMALS,   0x1E);
         GET_LUMP(VertexUnlit,    VERTEX_UNLIT,     0x47);
         GET_LUMP(VertexLitFlat,  VERTEX_LIT_FLAT,  0x48);
         GET_LUMP(VertexLitBump,  VERTEX_LIT_BUMP,  0x49);
@@ -22,38 +22,36 @@ namespace titanfall {
         // NOTE: quake::Vertex hates cast & memcpy, so we do it the hard way
         #define COPY_VERTEX_BASE() \
             auto position = VERTICES[bsp_vertex.position_index];\
-            gltf_vertex.position[0] =  position.x; \
-            gltf_vertex.position[1] =  position.z; \
-            gltf_vertex.position[2] = -position.y; \
+            gltf_vertex.position.x =  position.x; \
+            gltf_vertex.position.y =  position.z; \
+            gltf_vertex.position.z = -position.y; \
             auto normal = VERTEX_NORMALS[bsp_vertex.normal_index]; \
-            gltf_vertex.normal[0] = normal.x; \
-            gltf_vertex.normal[1] = normal.y; \
-            gltf_vertex.normal[2] = normal.z; \
-            std::memcpy(gltf_vertex.uv,     bsp_vertex.uv,     sizeof(float)   * 2); \
-            std::memcpy(gltf_vertex.colour, bsp_vertex.colour, sizeof(uint8_t) * 4)
+            gltf_vertex.normal = normal; \
+            gltf_vertex.uv = bsp_vertex.uv; \
+            gltf_vertex.colour = bsp_vertex.colour;
         for (const auto &bsp_vertex : VERTEX_UNLIT) {
             COPY_VERTEX_BASE();
-            memset(gltf_vertex.lightmap_uv,   0, sizeof(float) * 2);
-            memset(gltf_vertex.lightmap_step, 0, sizeof(float) * 2);
+            gltf_vertex.lightmap_uv   = {0, 0};
+            gltf_vertex.lightmap_step = {0, 0};
             state.buffer_vertices.emplace_back(gltf_vertex);
         }
         for (const auto &bsp_vertex : VERTEX_LIT_FLAT) {
             COPY_VERTEX_BASE();
-            memcpy(gltf_vertex.lightmap_uv,   bsp_vertex.lightmap.uv,   sizeof(float) * 2);
-            memcpy(gltf_vertex.lightmap_step, bsp_vertex.lightmap.step, sizeof(float) * 2);
+            gltf_vertex.lightmap_uv   = bsp_vertex.lightmap_uv;
+            gltf_vertex.lightmap_step = bsp_vertex.lightmap_step;
             state.buffer_vertices.emplace_back(gltf_vertex);
         }
         for (const auto &bsp_vertex : VERTEX_LIT_BUMP) {
             COPY_VERTEX_BASE();
-            memcpy(gltf_vertex.lightmap_uv,   bsp_vertex.lightmap.uv,   sizeof(float) * 2);
-            memcpy(gltf_vertex.lightmap_step, bsp_vertex.lightmap.step, sizeof(float) * 2);
+            gltf_vertex.lightmap_uv   = bsp_vertex.lightmap_uv;
+            gltf_vertex.lightmap_step = bsp_vertex.lightmap_step;
             // TODO: tangent
             state.buffer_vertices.emplace_back(gltf_vertex);
         }
         for (const auto &bsp_vertex : VERTEX_UNLIT_TS) {
             COPY_VERTEX_BASE();
-            memset(gltf_vertex.lightmap_uv,   0, sizeof(float) * 2);
-            memset(gltf_vertex.lightmap_step, 0, sizeof(float) * 2);
+            gltf_vertex.lightmap_uv   = {0, 0};
+            gltf_vertex.lightmap_step = {0, 0};
             // TODO: tangent
             state.buffer_vertices.emplace_back(gltf_vertex);
         }

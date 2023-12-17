@@ -4,25 +4,26 @@
 #include <string>
 #include <vector>
 
+#include "../common.hpp"
 #include "../bsp/quake.hpp"
 
 
 namespace quake {
-    typedef struct {
-        float    position[3];       // POSITION
-        float    normal[3];         // NORMAL
-        float    uv[2];             // TEXCOORD_0
-        uint8_t  colour[4];         // COLOR_0
-        float    lightmap_uv[2];    // TEXCOORD_1
+    struct VertexGLTF {
+        Vector    position;       // POSITION
+        Vector    normal;         // NORMAL
+        TexCoord  uv;             // TEXCOORD_0
+        ByteRGBA  colour;         // COLOR_0
+        TexCoord  lightmap_uv;    // TEXCOORD_1
         // TODO: convert LIGHTING lump into texture atlas
-    } VertexGLTF;
+    };
 
 
-    typedef struct {
+    struct MetaGLTF {
         uint32_t     first_byte;      // accessor.byteOffset
         uint32_t     num_vertices;    // accessor.count
         std::string  material_name;   // gltf.material.name
-    } MetaGLTF;
+    };
 
 
     typedef struct {
@@ -34,6 +35,8 @@ namespace quake {
         std::vector<std::string>  gltf;
     } StateGLTF;
 
+
+    /* FUNCTIONS */
 
     void gather_vertices(Bsp &bsp, StateGLTF &state);
 
