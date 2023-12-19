@@ -1,5 +1,5 @@
 CXX       := g++
-CXXFLAGS  := -ggdb
+CXXFLAGS  := -ggdb --std=c++20 -Wall -O2
 SRC_DIRS  := src src/branch src/bsp src/convert
 ALL_DIRS  := $(addprefix build/,$(SRC_DIRS))
 CPP_FILES := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.cpp))
@@ -21,3 +21,5 @@ build/%.o: %.cpp $(CPP_FILES)
 
 build/bsp2gltf.exe: $(O_FILES)
 	$(CXX) $(CXXFLAGS) -o $@ $^
+
+# TODO: build/identify.exe
