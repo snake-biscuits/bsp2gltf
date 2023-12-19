@@ -59,3 +59,6 @@ dkms.conf
 
 build/*
 test/extract/*
+
+# local vim config
+.vimrc
